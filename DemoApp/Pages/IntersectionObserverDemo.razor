@@ -1,0 +1,103 @@
+﻿@page "/resizeobserverdemo"
+@using Blazor.Essentials.ResizeObserverAPI.Interfaces
+@using Blazor.Essentials.ResizeObserverAPI
+@using Microsoft.Extensions.Logging
+
+@inject IResizeObserverFactory ResizeObserverFactory
+@inject ILogger<ResizeObserverDemo> Logger
+
+<style>
+    .resizeCard {
+        width: 50%; 
+        background: green;
+    }
+</style>
+
+<h1>Resize Observer - Demo 1</h1>
+
+<div class="card resizeCard" @ref=resizerReference style="border-radius: @(borderRadius)px">
+    <div class="card-body">
+        The border radius of this div changes in line with the size of it.
+        <em>border-radius: @(borderRadius)px</em>
+    </div>
+</div>
+<div class=".container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">width</th>
+                <th scope="col">height</th>
+                <th scope="col">top</th>
+                <th scope="col">right</th>
+                <th scope="col">bottom</th>
+                <th scope="col">left</th>
+            </tr>
+        </thead>
+        @foreach (var item in entriesList)
+        {
+            <tr>
+                <td>@item.ContentRect.Width</td>
+                <td>@item.ContentRect.Height</td>
+                <td>@item.ContentRect.Top</td>
+                <td>@item.ContentRect.Right</td>
+                <td>@item.ContentRect.Bottom</td>
+                <td>@item.ContentRect.Left</td>
+            </tr>
+        }
+    </table>
+</div>
+@code {
+    private ElementReference resizerReference;
+
+    private IResizeObserver resizeObserver;
+
+    private decimal borderRadius = 10.0M;
+
+    private List<ResizeObserverEntry> entriesList = new List<ResizeObserverEntry>();
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        Logger.LogInformation($"OnAfterRender {firstRender}");
+        if (firstRender)
+        {
+            if (resizeObserver == null) 
+            {
+                Logger.LogInformation($"AttachObserver");
+                AttachObserver();
+            }
+        }
+    }
+
+    private void AttachObserver() 
+    {
+        resizeObserver = ResizeObserverFactory.CreateResizeObserver(this.OnResize);
+        resizeObserver.Observe(resizerReference);
+    }
+
+    private void OnResize(IEnumerable<ResizeObserverEntry> entries, IResizeObserver sourceObserver)
+    {
+        foreach (var entry in entries)
+        {
+            if (entry.ContentRect != null) 
+            {
+                borderRadius = Math.Min(100, (entry.ContentRect.Width/10) + (entry.ContentRect.Height/10) );
+
+                AddEntryToList(entry);
+
+                StateHasChanged();
+            }
+        }
+    }
+
+    private void AddEntryToList(ResizeObserverEntry entry) 
+    {
+        entriesList.Add(entry);
+        if (entriesList.Count > 10) 
+        {
+            entriesList.RemoveRange(0, entriesList.Count - 10);
+        }        
+    }
+
+}
