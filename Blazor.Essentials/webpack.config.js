@@ -16,10 +16,10 @@ module.exports = {
     ]
   },
   entry: {
-    "blazor.essentials": "./src/BlazorEssentials.ts"
+    "blazor-essentials": "./src/BlazorEssentials.ts"
   },
   output: {
-    path: path.join(__dirname, "../DemoApp/wwwroot/scripts"),
+    path: path.join(__dirname, "./wwwroot/"),
     filename: "[name].js"
   }
 };

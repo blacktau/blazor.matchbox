@@ -1,9 +1,70 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <RazorLangVersion>3.0</RazorLangVersion>
+    <Authors>Sean Garrett</Authors>
+    <Product>Blazor.Essentials</Product>
+    <Description>
+      A Blazor Library exposing browsers Web Apis to Blazor code.
+    </Description>
+    <Copyright>Sean Garrett</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/blacktau/blazor.essentials</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/blacktau/blazor.essentials</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+
+    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
+    <LangVersion>latest</LangVersion>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <DefaultItemExcludes>${DefaultItemExcludes};scripts\dist\**;scripts\node_modules\**</DefaultItemExcludes>
+    <NoWarn>CS2008</NoWarn>
+    <!-- VS's FastUpToDateCheck doesn't consider .ts file changes, so it's necessary to disable it to get incremental builds to work correctly (albeit not as fast as if FastUpToDateCheck did work for them) -->
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+    <RootNamespace>Blazor.Essentials</RootNamespace>
+    <PackageTags>Blazor</PackageTags>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="package.json" />
+    <Content Remove="package-lock.json" />
+    <Content Remove="tsconfig.json" />
+    <Content Remove="tsfmt.json" />
+    <Content Remove="tslint.json" />
+    <Content Remove="webpack.config.json" />
+    <Content Remove="node_modules\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="package.json" />
+    <None Include="package-lock.json" />
+    <None Include="tsconfig.json" />
+    <None Include="tsfmt.json" />
+    <None Include="tslint.json" />
+    <None Include="webpack.config.json" />
+    <None Include="node_modules\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WebpackInputs Include="src\**\*.ts" Exclude="wwwroot\**;node_modules\**" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.0" />
   </ItemGroup>
+
+  <Target Name="EnsureNpmRestored" Condition="!Exists('node_modules')">
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec Command="npm install" ConsoleToMsBuild="true"/>
+  </Target>
+
+  <Target Name="RunWebpack" AfterTargets="ResolveReferences" Inputs="@(WebpackInputs)" Outputs="wwwroot\blazor-essentials.js" DependsOnTargets="EnsureNpmRestored">
+    <RemoveDir Directories="wwwroot" />
+    <Exec Command="npm run build" ConsoleToMsBuild="true"/>
+    <ItemGroup>
+      <EmbeddedResource Include="wwwroot\*.js" LogicalName="blazor:js:%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
+  </Target>
+
 </Project>

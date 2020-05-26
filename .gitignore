@@ -4,3 +4,4 @@ obj/
 node_modules/
 *.csproj.user
 *.suo
+wwwroot/

@@ -1,4 +1,3 @@
-import ResizeObserver from 'resize-observer-polyfill'
 import { ResizeObserverEntryTO } from './ResizeObserverEntryTO'
 import { BoxSizeTO } from '../Common/BorderBoxSizeTO'
 import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO'
@@ -20,11 +19,11 @@ import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO'
       }
     }
 
-    observe = (instanceKey: string, element: Element, options?: ResizeObserverOptions) => {
+    observe = (instanceKey: string, element: Element) => {
       const observer = this.resizeObservers.get(instanceKey)
-      console.log(`[JS] observe: ${instanceKey} ${element} ${options}`)
+      console.log(`[JS] observe: ${instanceKey} ${element}`)
       if (observer) {
-        observer.observe(element, options)
+        observer.observe(element)
       }
     }
 

@@ -1,4 +1,3 @@
-import IntersectionObserver from 'intersection-observer'
 import { IntersectionObserverEntryTO } from './IntersectionObserverEntryTO';
 import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO';
 

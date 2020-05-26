@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Blazor.Essentials.Js\Blazor.Essentials.Js.csproj" />
     <ProjectReference Include="..\Blazor.Essentials\Blazor.Essentials.csproj" />
   </ItemGroup>
 

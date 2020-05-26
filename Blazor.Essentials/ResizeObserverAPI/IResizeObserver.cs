@@ -6,7 +6,7 @@ namespace Blazor.Essentials.ResizeObserverAPI.Interfaces
     {
         void Disconnect();
 
-        void Observe(ElementReference reference, ResizeObserverOptions options = null);
+        void Observe(ElementReference reference);
 
         void Unobserve(ElementReference target);
     }

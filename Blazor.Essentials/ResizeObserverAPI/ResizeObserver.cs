@@ -31,10 +31,10 @@ namespace Blazor.Essentials.ResizeObserverAPI
 
         public void Disconnect() => this.jsRuntime.InvokeVoidAsync(MethodNames.DISCONNECT, this.instanceKey);
 
-        public void Observe(ElementReference targetElement, ResizeObserverOptions options = null)
+        public void Observe(ElementReference targetElement)
         {
-            logger.LogDebug($"Observe({targetElement}, {options})");
-            this.jsRuntime.InvokeVoidAsync(MethodNames.OBSERVE, this.instanceKey, targetElement, options);
+            logger.LogDebug($"Observe({targetElement})");
+            this.jsRuntime.InvokeVoidAsync(MethodNames.OBSERVE, this.instanceKey, targetElement);
         }
 
         public void Unobserve(ElementReference target)
