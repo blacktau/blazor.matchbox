@@ -1,0 +1,9 @@
+{
+    "Logging" : {
+        "LogLevel": {
+            "Microsoft" : "Information",
+            "Microsoft.Hosting.Lifetime": "Information",
+            "DemoApp": "Information"
+        }
+    }
+}
