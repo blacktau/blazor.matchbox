@@ -1,103 +1,128 @@
 ﻿@page "/intersectionobserverdemo"
-@using Blazor.Essentials.ResizeObserverAPI.Interfaces
-@using Blazor.Essentials.ResizeObserverAPI
-@using Microsoft.Extensions.Logging
 
-@inject IResizeObserverFactory ResizeObserverFactory
-@inject ILogger<ResizeObserverDemo> Logger
+@using Blazor.Essentials.IntersectionObserverAPI;
+@using Microsoft.Extensions.Logging;
+
+@inject ILogger<IntersectionObserverDemo> Logger;
+@inject IIntersectionObserverFactory ObserverFactory;
+
 
 <style>
-    .resizeCard {
-        width: 50%; 
-        background: green;
+    .theBox {
+        border: 4px solid rgb(20, 20, 120);
+        transition: background-color 1s, border 1s;
+        width: 350px;
+        height: 350px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
     }
+
+    .vertical {
+        color: white;
+        font: 32px "Arial";
+    }
+
+    .paddingCard {
+        height: 100vh;
+    }
+
 </style>
 
-<h1>Resize Observer - Demo 1</h1>
+<h1>Intersection Observer - Demo</h1>
 
-<div class="card resizeCard" @ref=resizerReference style="border-radius: @(borderRadius)px">
-    <div class="card-body">
-        The border radius of this div changes in line with the size of it.
-        <em>border-radius: @(borderRadius)px</em>
+<div class="card">
+    <div class="card-body paddingCard">
+        Scroll this page up and down and notice how the appearance of the box (below the folder) changes as you do so.
+    </div>    
+</div>
+
+<div class="card" @ref=observerReference>
+    <div class="card-body theBox" style="background-color:rgba(@red, 40, @blue, @currentRatio)">
+        <div class="vertical">
+            Welcome to <strong>The Box!</strong>
+        </div>
     </div>
 </div>
-<div class=".container">
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">width</th>
-                <th scope="col">height</th>
-                <th scope="col">top</th>
-                <th scope="col">right</th>
-                <th scope="col">bottom</th>
-                <th scope="col">left</th>
-            </tr>
-        </thead>
-        @foreach (var item in entriesList)
-        {
-            <tr>
-                <td>@item.ContentRect.Width</td>
-                <td>@item.ContentRect.Height</td>
-                <td>@item.ContentRect.Top</td>
-                <td>@item.ContentRect.Right</td>
-                <td>@item.ContentRect.Bottom</td>
-                <td>@item.ContentRect.Left</td>
-            </tr>
-        }
-    </table>
+
+<div class="card">
+    <div class="card-body paddingCard">
+        This space intentionally left blank.
+    </div>    
 </div>
+
 @code {
-    private ElementReference resizerReference;
+        private const int numSteps = 20;
 
-    private IResizeObserver resizeObserver;
+        private decimal prevRatio = 0.0M;
 
-    private decimal borderRadius = 10.0M;
+        private int red = 40;
 
-    private List<ResizeObserverEntry> entriesList = new List<ResizeObserverEntry>();
+        private int blue = 190;
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        base.OnAfterRender(firstRender);
+        private decimal currentRatio = 255M;
 
-        Logger.LogInformation($"OnAfterRender {firstRender}");
-        if (firstRender)
+        private ElementReference observerReference;
+
+        private IIntersectionObserver observer;
+
+        protected override void OnAfterRender(bool firstRender)
         {
-            if (resizeObserver == null) 
+            base.OnAfterRender(firstRender);
+
+            if (!firstRender || observer != null)
             {
-                Logger.LogInformation($"AttachObserver");
-                AttachObserver();
+                return;
             }
+
+            AttachObserver();
         }
-    }
 
-    private void AttachObserver() 
-    {
-        resizeObserver = ResizeObserverFactory.CreateResizeObserver(this.OnResize);
-        resizeObserver.Observe(resizerReference);
-    }
-
-    private void OnResize(IEnumerable<ResizeObserverEntry> entries, IResizeObserver sourceObserver)
-    {
-        foreach (var entry in entries)
+        private void AttachObserver()
         {
-            if (entry.ContentRect != null) 
+            var options = new IntersectionObserverOptions
             {
-                borderRadius = Math.Min(100, (entry.ContentRect.Width/10) + (entry.ContentRect.Height/10) );
+                Root = null,
+                RootMargin = "0px",
+                Threshold = BuildThresholdList()
+            };
 
-                AddEntryToList(entry);
+            observer = ObserverFactory.CreateObserver(this.OnIntersectUpdated, options);
 
-                StateHasChanged();
-            }
+            observer.Observe(observerReference);
         }
-    }
 
-    private void AddEntryToList(ResizeObserverEntry entry) 
-    {
-        entriesList.Add(entry);
-        if (entriesList.Count > 10) 
+        private void OnIntersectUpdated(IList<IntersectionObserverEntry> entries, IIntersectionObserver sourceObserver)
         {
-            entriesList.RemoveRange(0, entriesList.Count - 10);
-        }        
-    }
+            foreach (var entry in entries)
+            {
+                red = entry.IntersectionRatio > prevRatio 
+                    ? 40 
+                    : 190;
 
+                blue = entry.IntersectionRatio > prevRatio
+                    ? 190 
+                    : 40;
+
+                currentRatio = entry.IntersectionRatio;
+
+                prevRatio = entry.IntersectionRatio;
+            }
+
+            StateHasChanged();
+        }
+
+        private static List<decimal> BuildThresholdList()
+        {
+            var thresholds = new List<decimal>();
+            for (int i = 0; i <= numSteps; i++)
+            {
+                var ratio = i / (decimal)numSteps;
+                thresholds.Add(ratio);
+            }
+
+            thresholds.Add(0);
+            return thresholds;
+        }
 }

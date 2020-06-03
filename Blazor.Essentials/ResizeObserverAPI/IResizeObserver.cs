@@ -1,8 +1,9 @@
-namespace Blazor.Essentials.ResizeObserverAPI.Interfaces
+namespace Blazor.Essentials.ResizeObserverAPI
 {
+    using System;
     using Microsoft.AspNetCore.Components;
 
-    public interface IResizeObserver
+    public interface IResizeObserver : IDisposable
     {
         void Disconnect();
 

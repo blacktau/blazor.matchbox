@@ -1,5 +1,5 @@
 ﻿@page "/resizeobserverdemo"
-@using Blazor.Essentials.ResizeObserverAPI.Interfaces
+
 @using Blazor.Essentials.ResizeObserverAPI
 @using Microsoft.Extensions.Logging
 
@@ -60,19 +60,19 @@
         base.OnAfterRender(firstRender);
 
         Logger.LogInformation($"OnAfterRender {firstRender}");
-        if (firstRender)
+        
+        if (!firstRender || resizeObserver != null)
         {
-            if (resizeObserver == null) 
-            {
-                Logger.LogInformation($"AttachObserver");
-                AttachObserver();
-            }
+            return;
         }
+
+        Logger.LogInformation($"AttachObserver");
+        AttachObserver();
     }
 
     private void AttachObserver() 
     {
-        resizeObserver = ResizeObserverFactory.CreateResizeObserver(this.OnResize);
+        resizeObserver = ResizeObserverFactory.CreateObserver(this.OnResize);
         resizeObserver.Observe(resizerReference);
     }
 

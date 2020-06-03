@@ -5,18 +5,18 @@ namespace Blazor.Essentials.IntersectionObserverAPI
 {
     public class IntersectionObserverEntry
     {
-        public DomRectReadOnly BoundingClientRect { get; }
+        public DomRectReadOnly BoundingClientRect { get; set; }
 
-        public decimal IntersectionRatio { get; }
+        public decimal IntersectionRatio { get; set;  }
 
-        public DomRectReadOnly IntersectionRect { get; }
+        public DomRectReadOnly IntersectionRect { get; set;  }
 
         public bool IsIntersecting { get; set; }
 
-        public DomRectReadOnly RootBounds { get; }
+        public DomRectReadOnly RootBounds { get; set;  }
 
-        public ElementReference Target { get; }
+        public ElementReference Target { get; set;  }
 
-        public decimal Time { get; }
+        public decimal Time { get; set;  }
     }
 }

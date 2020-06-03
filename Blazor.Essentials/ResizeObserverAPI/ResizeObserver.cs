@@ -3,14 +3,12 @@ namespace Blazor.Essentials.ResizeObserverAPI
     using System;
     using System.Collections.Generic;
     using System.Text.Json;
-    
-    using Blazor.Essentials.ResizeObserverAPI.Interfaces;
 
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
 
-    internal class ResizeObserver : IResizeObserver, IDisposable
+    internal class ResizeObserver : IResizeObserver
     {
         private readonly IJSRuntime jsRuntime;
         private readonly Action<List<ResizeObserverEntry>, IResizeObserver> callback;

@@ -19,7 +19,5 @@ namespace DemoApp
             
             await builder.Build().RunAsync();
         }
-
-
     }
 }

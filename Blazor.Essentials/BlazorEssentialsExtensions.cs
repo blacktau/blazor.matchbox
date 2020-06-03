@@ -1,7 +1,7 @@
 namespace Blazor.Essentials
 {
+    using Blazor.Essentials.IntersectionObserverAPI;
     using Blazor.Essentials.ResizeObserverAPI;
-    using Blazor.Essentials.ResizeObserverAPI.Interfaces;
 
     using Microsoft.Extensions.DependencyInjection;
 
@@ -10,7 +10,8 @@ namespace Blazor.Essentials
         public static IServiceCollection AddBlazorEssentials(this IServiceCollection services)
         {
             return services
-                .AddSingleton<IResizeObserverFactory, ResizeObserverFactory>();
+                .AddSingleton<IResizeObserverFactory, ResizeObserverFactory>()
+                .AddSingleton<IIntersectionObserverFactory, IntersectionObserverFactory>();
         }
     }
 }

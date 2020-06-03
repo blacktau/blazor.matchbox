@@ -1,4 +1,4 @@
-namespace Blazor.Essentials.ResizeObserverAPI.Interfaces
+namespace Blazor.Essentials.ResizeObserverAPI
 {
     using Blazor.Essentials.Common;
 

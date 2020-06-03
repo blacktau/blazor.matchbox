@@ -2,24 +2,24 @@ import { IntersectionObserverEntryTO } from './IntersectionObserverEntryTO';
 import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO';
 
   export class IntersectionObserverManager {
-    private resizeObservers: Map<string, IntersectionObserver> = new Map<string, IntersectionObserver>()
+    private observers: Map<string, IntersectionObserver> = new Map<string, IntersectionObserver>()
     private dotnetObservers: Map<string, IDotnetIntersectionObserver> = new Map<string, IDotnetIntersectionObserver>()
 
     create = (instanceKey: string, dotnetInstanceRef: IDotnetIntersectionObserver, options?: IntersectionObserverOptions) => {
       const observer = new IntersectionObserver(this.observerCallBack, options);
-      this.resizeObservers.set(instanceKey, observer)
+      this.observers.set(instanceKey, observer)
       this.dotnetObservers.set(instanceKey, dotnetInstanceRef);
     }
 
     disconnect = (instanceKey: string) => {
-      const observer = this.resizeObservers.get(instanceKey);
+      const observer = this.observers.get(instanceKey);
       if (observer) {
         observer.disconnect()
       }
     }
 
     observe = (instanceKey: string, element: Element) => {
-      const observer = this.resizeObservers.get(instanceKey);
+      const observer = this.observers.get(instanceKey);
 
       if (observer) {
         observer.observe(element)
@@ -27,7 +27,7 @@ import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO';
     }
 
     unobserve = (instanceKey: string, element: Element) => {
-      const observer = this.resizeObservers.get(instanceKey);
+      const observer = this.observers.get(instanceKey);
 
       if (observer) {
         observer.unobserve(element)
@@ -35,24 +35,25 @@ import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO';
     }
 
     takeRecords = (instanceKey: string) => {
-      const observer = this.resizeObservers.get(instanceKey);
+      const observer = this.observers.get(instanceKey);
 
       if (observer) {
         const entries = observer.takeRecords()
         const mappedEntries = this.convertEntries(entries)
-        return mappedEntries
+
+        return JSON.stringify(mappedEntries)
       }      
     }
 
     dispose = (instanceKey: string) => {
       this.disconnect(instanceKey)
       this.dotnetObservers.delete(instanceKey)
-      this.resizeObservers.delete(instanceKey)
+      this.observers.delete(instanceKey)
     }
 
     private getKeyForObserver = (observer: IntersectionObserver): string => {
       let foundKey = ''
-      this.resizeObservers.forEach((value, key) => {
+      this.observers.forEach((value, key) => {
         if (observer == value) {
           foundKey = key
         }

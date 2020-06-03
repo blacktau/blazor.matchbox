@@ -5,7 +5,7 @@ using Microsoft.JSInterop;
 
 namespace Blazor.Essentials.IntersectionObserverAPI
 {
-    internal class IntersectionObserverFactory
+    public class IntersectionObserverFactory : IIntersectionObserverFactory
     {
         private readonly IJSRuntime jsRuntime;
         private readonly ILoggerFactory loggerFactory;
@@ -16,9 +16,14 @@ namespace Blazor.Essentials.IntersectionObserverAPI
             this.jsRuntime = jsRuntime;
         }
 
-        public IIntersectionObserver CreateIntersectionObserver(Action<List<IntersectionObserverEntry>, IIntersectionObserver> callback) 
+        public IIntersectionObserver CreateObserver(Action<List<IntersectionObserverEntry>, IIntersectionObserver> callback) 
         {
-            return new IntersectionObserver(jsRuntime, callback, loggerFactory.CreateLogger<IntersectionObserver>());
+            return CreateObserver(callback, null);
+        }
+
+        public IIntersectionObserver CreateObserver(Action<List<IntersectionObserverEntry>, IIntersectionObserver> callback, IntersectionObserverOptions options)
+        {
+            return new IntersectionObserver(jsRuntime, callback, options, loggerFactory.CreateLogger<IntersectionObserver>());
         }
     }
 }

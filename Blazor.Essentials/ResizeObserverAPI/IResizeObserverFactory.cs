@@ -1,10 +1,10 @@
-namespace Blazor.Essentials.ResizeObserverAPI.Interfaces
+namespace Blazor.Essentials.ResizeObserverAPI
 {
     using System;
     using System.Collections.Generic;
 
     public interface IResizeObserverFactory
     {
-        IResizeObserver CreateResizeObserver(Action<IEnumerable<ResizeObserverEntry>,IResizeObserver> callback);
+        IResizeObserver CreateObserver(Action<IEnumerable<ResizeObserverEntry>,IResizeObserver> callback);
     }
 }

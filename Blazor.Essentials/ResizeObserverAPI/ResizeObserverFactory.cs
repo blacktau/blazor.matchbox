@@ -3,7 +3,6 @@ namespace Blazor.Essentials.ResizeObserverAPI
     using System;
     using System.Collections.Generic;
 
-    using Blazor.Essentials.ResizeObserverAPI.Interfaces;
     using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
 
@@ -18,7 +17,7 @@ namespace Blazor.Essentials.ResizeObserverAPI
             this.jsRuntime = jsRuntime;
         }
 
-        public IResizeObserver CreateResizeObserver(Action<IEnumerable<ResizeObserverEntry>, IResizeObserver> callback)
+        public IResizeObserver CreateObserver(Action<IEnumerable<ResizeObserverEntry>, IResizeObserver> callback)
             => new ResizeObserver(this.jsRuntime, callback, loggerFactory.CreateLogger<ResizeObserver>());
     }
 }

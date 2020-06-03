@@ -1,10 +1,13 @@
-import { ResizeObserverManager } from "./ResizeObserverAPI/ResizeObserverManager";
+import { ResizeObserverManager } from "./ResizeObserverAPI/ResizeObserverManager"
+import {IntersectionObserverManager} from "./IntersectionObserverAPI/IntersectionObserverManager"
+
 
 namespace BlazorEssentials {
   const StaticName: string = 'BlazorEssentials';
   
   const BlazorEssentials = {
-    ResizeObserverManager: new ResizeObserverManager()
+    ResizeObserverManager: new ResizeObserverManager(),
+    IntersectionObserverManager: new IntersectionObserverManager()
   };
   
   export function initialize(): void {

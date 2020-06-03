@@ -7,7 +7,7 @@ using Microsoft.JSInterop;
 
 namespace Blazor.Essentials.IntersectionObserverAPI
 {
-    public sealed class IntersectionObserver : IIntersectionObserver, IDisposable
+    public sealed class IntersectionObserver : IIntersectionObserver
     {
         private readonly IJSRuntime jsRuntime;
         private readonly Action<List<IntersectionObserverEntry>, IIntersectionObserver> callback;
@@ -16,20 +16,18 @@ namespace Blazor.Essentials.IntersectionObserverAPI
         private readonly string instanceKey;
         private bool disposedValue;
 
-        public ElementReference Root => throw new System.NotImplementedException();
-
-        public string RootMargin => throw new System.NotImplementedException();
-
-        public int[] Thresholds => throw new System.NotImplementedException();
-
-        public IntersectionObserver(IJSRuntime jsRuntime, Action<List<IntersectionObserverEntry>, IIntersectionObserver> callback, ILogger<IntersectionObserver> logger)
+        public IntersectionObserver(
+            IJSRuntime jsRuntime, 
+            Action<List<IntersectionObserverEntry>, IIntersectionObserver> callback, 
+            IntersectionObserverOptions options, 
+            ILogger<IntersectionObserver> logger)
         {
             this.jsRuntime = jsRuntime;
             this.callback = callback;
             this.logger = logger;
             this.instanceKey = Guid.NewGuid().ToString();
             this.reference = DotNetObjectReference.Create(this);
-            this.jsRuntime.InvokeVoidAsync(MethodNames.CREATE, this.instanceKey, this.reference);
+            this.jsRuntime.InvokeVoidAsync(MethodNames.CREATE, this.instanceKey, this.reference, options);
         }
 
         public void Disconnect() => this.jsRuntime.InvokeVoidAsync(MethodNames.DISCONNECT, this.instanceKey);
@@ -41,7 +39,10 @@ namespace Blazor.Essentials.IntersectionObserverAPI
 
         public List<IntersectionObserverEntry> TakeRecords()
         {
-            var entriesJson = this.jsRuntime.InvokeAsync<string>(MethodNames.TAKERECORDS, this.instanceKey).GetAwaiter().GetResult();
+            var entriesJson = this.jsRuntime.InvokeAsync<string>(MethodNames.TAKERECORDS, this.instanceKey)
+                .GetAwaiter()
+                .GetResult();
+
             return DeserializeEntries(entriesJson);
         }
 
@@ -67,23 +68,18 @@ namespace Blazor.Essentials.IntersectionObserverAPI
                     this.reference?.Dispose();
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
                 this.jsRuntime?.InvokeVoidAsync(MethodNames.DISPOSE, this.instanceKey);
                 disposedValue = true;
             }
         }
 
-        // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
         ~IntersectionObserver()
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: false);
         }
 
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
