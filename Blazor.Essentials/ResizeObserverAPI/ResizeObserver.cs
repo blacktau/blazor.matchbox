@@ -1,14 +1,15 @@
+using System.Threading.Tasks;
 namespace Blazor.Essentials.ResizeObserverAPI
 {
     using System;
     using System.Collections.Generic;
     using System.Text.Json;
-
+    using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
     using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
 
-    internal class ResizeObserver : IResizeObserver
+    public sealed class ResizeObserver : IResizeObserver
     {
         private readonly IJSRuntime jsRuntime;
         private readonly Action<List<ResizeObserverEntry>, IResizeObserver> callback;
@@ -17,27 +18,33 @@ namespace Blazor.Essentials.ResizeObserverAPI
         private readonly DotNetObjectReference<ResizeObserver> reference;
         private bool disposedValue;
 
-        public ResizeObserver(IJSRuntime jsRuntime, Action<List<ResizeObserverEntry>, IResizeObserver> callback, ILogger<ResizeObserver> logger)
+        public ResizeObserver(
+            IJSRuntime jsRuntime, 
+            Action<List<ResizeObserverEntry>, IResizeObserver> callback, 
+            ILogger<ResizeObserver> logger)
         {
             this.jsRuntime = jsRuntime;
             this.callback = callback;
             this.logger = logger;
             this.instanceKey = Guid.NewGuid().ToString();
             this.reference = DotNetObjectReference.Create(this);
-            this.jsRuntime.InvokeVoidAsync(MethodNames.CREATE, this.instanceKey, this.reference);
+            this.Initialize();
         }
 
-        public void Disconnect() => this.jsRuntime.InvokeVoidAsync(MethodNames.DISCONNECT, this.instanceKey);
+        public ValueTask DisconnectAsync() 
+        { 
+            return this.jsRuntime.InvokeVoidAsync(MethodNames.DISCONNECT, this.instanceKey);
+        }
 
-        public void Observe(ElementReference targetElement)
+        public ValueTask ObserveAsync(ElementReference targetElement)
         {
             logger.LogDebug($"Observe({targetElement})");
-            this.jsRuntime.InvokeVoidAsync(MethodNames.OBSERVE, this.instanceKey, targetElement);
+            return this.jsRuntime.InvokeVoidAsync(MethodNames.OBSERVE, this.instanceKey, targetElement);
         }
 
-        public void Unobserve(ElementReference target)
+        public ValueTask UnobserveAsync(ElementReference target)
         {
-            this.jsRuntime.InvokeVoidAsync(MethodNames.UNOBSERVE, this.instanceKey, target);
+            return this.jsRuntime.InvokeVoidAsync(MethodNames.UNOBSERVE, this.instanceKey, target);
         }
 
         [JSInvokable("InvokeCallback")]
@@ -51,7 +58,7 @@ namespace Blazor.Essentials.ResizeObserverAPI
             this.callback?.Invoke(entries, this);
         }
        
-        protected virtual void Dispose(bool disposing)
+        private ValueTask Dispose(bool disposing)
         {
             if (!disposedValue)
             {
@@ -60,26 +67,25 @@ namespace Blazor.Essentials.ResizeObserverAPI
                 {
                     this.reference?.Dispose();
                 }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
-                this.jsRuntime?.InvokeVoidAsync(MethodNames.DISCONNECT, this.instanceKey);
+                
                 disposedValue = true;
+
+                if (this.jsRuntime != null) 
+                {
+                     return this.jsRuntime.InvokeVoidAsync(MethodNames.DISCONNECT, this.instanceKey);
+                }
             }
+
+            return new ValueTask();
+        }
+        
+        public async ValueTask DisposeAsync()
+        {
+            await Dispose(disposing: true).ConfigureAwait(false);
         }
 
-        // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        ~ResizeObserver()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: false);
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+        private async void Initialize() {
+            await this.jsRuntime.InvokeVoidAsync(MethodNames.CREATE, this.instanceKey, this.reference).ConfigureAwait(false);
         }
 
         private static class MethodNames

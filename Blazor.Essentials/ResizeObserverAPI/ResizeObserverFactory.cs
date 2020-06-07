@@ -6,7 +6,7 @@ namespace Blazor.Essentials.ResizeObserverAPI
     using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
 
-    internal class ResizeObserverFactory : IResizeObserverFactory
+    public class ResizeObserverFactory : IResizeObserverFactory
     {
         private readonly IJSRuntime jsRuntime;
         private readonly ILoggerFactory loggerFactory;

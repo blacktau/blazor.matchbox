@@ -1,41 +1,41 @@
-import { IntersectionObserverEntryTO } from './IntersectionObserverEntryTO';
-import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO';
+import { IntersectionObserverEntryTO } from './IntersectionObserverEntryTO'
+import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO'
 
   export class IntersectionObserverManager {
     private observers: Map<string, IntersectionObserver> = new Map<string, IntersectionObserver>()
     private dotnetObservers: Map<string, IDotnetIntersectionObserver> = new Map<string, IDotnetIntersectionObserver>()
 
-    create = (instanceKey: string, dotnetInstanceRef: IDotnetIntersectionObserver, options?: IntersectionObserverOptions) => {
-      const observer = new IntersectionObserver(this.observerCallBack, options);
+    create = (instanceKey: string, dotnetInstanceRef: IDotnetIntersectionObserver, options?: IntersectionObserverOptions) : void => {
+      const observer = new IntersectionObserver(this.observerCallBack, options)
       this.observers.set(instanceKey, observer)
-      this.dotnetObservers.set(instanceKey, dotnetInstanceRef);
+      this.dotnetObservers.set(instanceKey, dotnetInstanceRef)
     }
 
-    disconnect = (instanceKey: string) => {
-      const observer = this.observers.get(instanceKey);
+    disconnect = (instanceKey: string) : void => {
+      const observer = this.observers.get(instanceKey)
       if (observer) {
         observer.disconnect()
       }
     }
 
-    observe = (instanceKey: string, element: Element) => {
-      const observer = this.observers.get(instanceKey);
+    observe = (instanceKey: string, element: Element) : void => {
+      const observer = this.observers.get(instanceKey)
 
       if (observer) {
         observer.observe(element)
       }
     }
 
-    unobserve = (instanceKey: string, element: Element) => {
-      const observer = this.observers.get(instanceKey);
+    unobserve = (instanceKey: string, element: Element) : void => {
+      const observer = this.observers.get(instanceKey)
 
       if (observer) {
         observer.unobserve(element)
       }
     }
 
-    takeRecords = (instanceKey: string) => {
-      const observer = this.observers.get(instanceKey);
+    takeRecords = (instanceKey: string) : string | undefined => {
+      const observer = this.observers.get(instanceKey)
 
       if (observer) {
         const entries = observer.takeRecords()
@@ -45,7 +45,7 @@ import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO';
       }      
     }
 
-    dispose = (instanceKey: string) => {
+    dispose = (instanceKey: string) : void => {
       this.disconnect(instanceKey)
       this.dotnetObservers.delete(instanceKey)
       this.observers.delete(instanceKey)
@@ -63,22 +63,22 @@ import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO';
     }
 
     private observerCallBack = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
-      const key = this.getKeyForObserver(observer);
+      const key = this.getKeyForObserver(observer)
 
       if (!key || key.length == 0) {
         return
       }
 
-      const dotNetInstance = this.dotnetObservers.get(key);
+      const dotNetInstance = this.dotnetObservers.get(key)
       if (dotNetInstance) {
         const mappedEntries = this.convertEntries(entries)
         const entriesJson = JSON.stringify(mappedEntries)
-        dotNetInstance.invokeMethodAsync('InvokeCallback', entriesJson);
+        dotNetInstance.invokeMethodAsync('InvokeCallback', entriesJson)
       }
     }
 
     private convertEntries = (entries: IntersectionObserverEntry[]): IntersectionObserverEntryTO[] => {
-      const mappedEntries = new Array<IntersectionObserverEntryTO>();
+      const mappedEntries = new Array<IntersectionObserverEntryTO>()
       if (!entries) {
         return mappedEntries
       }
@@ -102,9 +102,9 @@ import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO';
           mEntry.isIntersecting = entry.isIntersecting
           mEntry.time = entry.time
           mEntry.target = entry.target
-          mappedEntries.push(mEntry);
+          mappedEntries.push(mEntry)
         }
-      });
+      })
 
       return mappedEntries
     }
@@ -122,7 +122,7 @@ import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO';
   }
 
   interface IDotnetIntersectionObserver {
-    invokeMethodAsync(methodName: string, entries: string)
+    invokeMethodAsync(methodName: string, entries: string) : void
   }
 
   interface IntersectionObserverOptions {

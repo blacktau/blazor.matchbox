@@ -1,4 +1,5 @@
 ﻿@page "/resizeobserverdemo"
+@implements IDisposable
 
 @using Blazor.Essentials.ResizeObserverAPI
 @using Microsoft.Extensions.Logging
@@ -13,7 +14,7 @@
     }
 </style>
 
-<h1>Resize Observer - Demo 1</h1>
+<h1>Resize Observer - Demo</h1>
 
 <div class="card resizeCard" @ref=resizerReference style="border-radius: @(borderRadius)px">
     <div class="card-body">
@@ -46,6 +47,7 @@
         }
     </table>
 </div>
+
 @code {
     private ElementReference resizerReference;
 
@@ -54,6 +56,14 @@
     private decimal borderRadius = 10.0M;
 
     private List<ResizeObserverEntry> entriesList = new List<ResizeObserverEntry>();
+
+    public void Dispose()
+    {
+        if (resizeObserver != null)
+        {
+            resizeObserver.DisposeAsync();
+        }
+    }
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -73,7 +83,7 @@
     private void AttachObserver() 
     {
         resizeObserver = ResizeObserverFactory.CreateObserver(this.OnResize);
-        resizeObserver.Observe(resizerReference);
+        resizeObserver.ObserveAsync(resizerReference);
     }
 
     private void OnResize(IEnumerable<ResizeObserverEntry> entries, IResizeObserver sourceObserver)
@@ -98,6 +108,6 @@
         {
             entriesList.RemoveRange(0, entriesList.Count - 10);
         }        
-    }
+    }  
 
 }

@@ -1,4 +1,5 @@
 ﻿@page "/intersectionobserverdemo"
+@implements IDisposable
 
 @using Blazor.Essentials.IntersectionObserverAPI;
 @using Microsoft.Extensions.Logging;
@@ -53,76 +54,84 @@
 </div>
 
 @code {
-        private const int numSteps = 20;
+    private const int numSteps = 20;
 
-        private decimal prevRatio = 0.0M;
+    private decimal prevRatio = 0.0M;
 
-        private int red = 40;
+    private int red = 40;
 
-        private int blue = 190;
+    private int blue = 190;
 
-        private decimal currentRatio = 255M;
+    private decimal currentRatio = 255M;
 
-        private ElementReference observerReference;
+    private ElementReference observerReference;
 
-        private IIntersectionObserver observer;
+    private IIntersectionObserver observer;
 
-        protected override void OnAfterRender(bool firstRender)
+    public void Dispose()
+    {
+        if (observer != null)
         {
-            base.OnAfterRender(firstRender);
+            observer.DisposeAsync();
+        }
+    }
 
-            if (!firstRender || observer != null)
-            {
-                return;
-            }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
 
-            AttachObserver();
+        if (!firstRender || observer != null)
+        {
+            return;
         }
 
-        private void AttachObserver()
+        AttachObserver();
+    }
+
+    private void AttachObserver()
+    {
+        var options = new IntersectionObserverOptions
         {
-            var options = new IntersectionObserverOptions
-            {
-                Root = null,
-                RootMargin = "0px",
-                Threshold = BuildThresholdList()
-            };
+            Root = null,
+            RootMargin = "0px",
+            Threshold = BuildThresholdList()
+        };
 
-            observer = ObserverFactory.CreateObserver(this.OnIntersectUpdated, options);
+        observer = ObserverFactory.CreateObserver(this.OnIntersectUpdated, options);
 
-            observer.Observe(observerReference);
+        observer.ObserveAsync(observerReference);
+    }
+
+    private void OnIntersectUpdated(IList<IntersectionObserverEntry> entries, IIntersectionObserver sourceObserver)
+    {
+        foreach (var entry in entries)
+        {
+            red = entry.IntersectionRatio > prevRatio 
+                ? 40 
+                : 190;
+
+            blue = entry.IntersectionRatio > prevRatio
+                ? 190 
+                : 40;
+
+            currentRatio = entry.IntersectionRatio;
+
+            prevRatio = entry.IntersectionRatio;
         }
 
-        private void OnIntersectUpdated(IList<IntersectionObserverEntry> entries, IIntersectionObserver sourceObserver)
+        StateHasChanged();
+    }
+
+    private static List<decimal> BuildThresholdList()
+    {
+        var thresholds = new List<decimal>();
+        for (int i = 0; i <= numSteps; i++)
         {
-            foreach (var entry in entries)
-            {
-                red = entry.IntersectionRatio > prevRatio 
-                    ? 40 
-                    : 190;
-
-                blue = entry.IntersectionRatio > prevRatio
-                    ? 190 
-                    : 40;
-
-                currentRatio = entry.IntersectionRatio;
-
-                prevRatio = entry.IntersectionRatio;
-            }
-
-            StateHasChanged();
+            var ratio = i / (decimal)numSteps;
+            thresholds.Add(ratio);
         }
 
-        private static List<decimal> BuildThresholdList()
-        {
-            var thresholds = new List<decimal>();
-            for (int i = 0; i <= numSteps; i++)
-            {
-                var ratio = i / (decimal)numSteps;
-                thresholds.Add(ratio);
-            }
-
-            thresholds.Add(0);
-            return thresholds;
-        }
+        thresholds.Add(0);
+        return thresholds;
+    }
 }

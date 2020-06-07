@@ -6,20 +6,20 @@ import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO'
     private resizeObservers: Map<string, ResizeObserver> = new Map<string, ResizeObserver>()
     private dotnetObservers: Map<string, IDotnetResizeObserver> = new Map<string, IDotnetResizeObserver>()
 
-    create = (instanceKey: string, dotnetInstanceRef: IDotnetResizeObserver) => {
+    create = (instanceKey: string, dotnetInstanceRef: IDotnetResizeObserver): void => {
       const observer = new ResizeObserver(this.observerCallBack)
       this.resizeObservers.set(instanceKey, observer)
       this.dotnetObservers.set(instanceKey, dotnetInstanceRef)
     }
 
-    disconnect = (instanceKey: string) => {
+    disconnect = (instanceKey: string): void => {
       const observer = this.resizeObservers.get(instanceKey)
       if (observer) {
         observer.disconnect()
       }
     }
 
-    observe = (instanceKey: string, element: Element) => {
+    observe = (instanceKey: string, element: Element): void => {
       const observer = this.resizeObservers.get(instanceKey)
       console.log(`[JS] observe: ${instanceKey} ${element}`)
       if (observer) {
@@ -27,15 +27,15 @@ import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO'
       }
     }
 
-    unobserve = (instanceKey: string, element: Element) => {
-      const observer = this.resizeObservers.get(instanceKey);
+    unobserve = (instanceKey: string, element: Element): void => {
+      const observer = this.resizeObservers.get(instanceKey)
 
       if (observer) {
         observer.unobserve(element)
       }
     }
 
-    dispose = (instanceKey: string) => {
+    dispose = (instanceKey: string) : void => {
       this.disconnect(instanceKey)
       this.dotnetObservers.delete(instanceKey)
       this.resizeObservers.delete(instanceKey)
@@ -53,15 +53,15 @@ import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO'
     }
 
     private observerCallBack = (entries, observer) => {
-      const key = this.getKeyForObserver(observer);
+      const key = this.getKeyForObserver(observer)
 
       if (!key || key.length == 0) {
         return
       }
 
-      const dotNetInstance = this.dotnetObservers.get(key);
+      const dotNetInstance = this.dotnetObservers.get(key)
       if (dotNetInstance) {
-        const mappedEntries = new Array<ResizeObserverEntryTO>();
+        const mappedEntries = new Array<ResizeObserverEntryTO>()
         entries.forEach(entry => {
           if (entry) {
             const mEntry = new ResizeObserverEntryTO()
@@ -90,18 +90,18 @@ import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO'
             }
 
             mEntry.target = entry.target
-            mappedEntries.push(mEntry);
+            mappedEntries.push(mEntry)
           }
-        });
+        })
 
         const entriesJson = JSON.stringify(mappedEntries)
-        console.log(entriesJson);
+        console.log(entriesJson)
         
-        dotNetInstance.invokeMethodAsync('InvokeCallback', entriesJson);
+        dotNetInstance.invokeMethodAsync('InvokeCallback', entriesJson)
       }
     }
   }
 
   interface IDotnetResizeObserver {
-    invokeMethodAsync(methodName: string, entries: string)
+    invokeMethodAsync(methodName: string, entries: string) : void
   }

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -27,28 +28,29 @@ namespace Blazor.Essentials.IntersectionObserverAPI
             this.logger = logger;
             this.instanceKey = Guid.NewGuid().ToString();
             this.reference = DotNetObjectReference.Create(this);
-            this.jsRuntime.InvokeVoidAsync(MethodNames.CREATE, this.instanceKey, this.reference, options);
+            this.Initialize(options);
         }
 
-        public void Disconnect() => this.jsRuntime.InvokeVoidAsync(MethodNames.DISCONNECT, this.instanceKey);
-
-        public void Observe(ElementReference targetElement)
+        public ValueTask DisconnectAsync()
         {
-            this.jsRuntime.InvokeVoidAsync(MethodNames.OBSERVE, this.instanceKey, targetElement);
+            return this.jsRuntime.InvokeVoidAsync(MethodNames.DISCONNECT, this.instanceKey);
+        } 
+
+        public ValueTask ObserveAsync(ElementReference targetElement)
+        {
+            return this.jsRuntime.InvokeVoidAsync(MethodNames.OBSERVE, this.instanceKey, targetElement);
         }
 
-        public List<IntersectionObserverEntry> TakeRecords()
+        public async ValueTask<List<IntersectionObserverEntry>> TakeRecordsAsync()
         {
-            var entriesJson = this.jsRuntime.InvokeAsync<string>(MethodNames.TAKERECORDS, this.instanceKey)
-                .GetAwaiter()
-                .GetResult();
+            var entriesJson = await this.jsRuntime.InvokeAsync<string>(MethodNames.TAKERECORDS, this.instanceKey).ConfigureAwait(false);
 
             return DeserializeEntries(entriesJson);
         }
 
-        public void Unobserve(ElementReference target)
+        public ValueTask UnobserveAsync(ElementReference target)
         {
-            this.jsRuntime.InvokeVoidAsync(MethodNames.UNOBSERVE, this.instanceKey, target);
+            return jsRuntime.InvokeVoidAsync(MethodNames.UNOBSERVE, instanceKey, target);
         }
 
         [JSInvokable("InvokeCallback")]
@@ -58,7 +60,12 @@ namespace Blazor.Essentials.IntersectionObserverAPI
             this.callback?.Invoke(entries, this);
         }
 
-        private void Dispose(bool disposing)
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(disposing: true).ConfigureAwait(false);
+        }
+
+        private async Task DisposeAsync(bool disposing)
         {
             if (!disposedValue)
             {
@@ -68,29 +75,25 @@ namespace Blazor.Essentials.IntersectionObserverAPI
                     this.reference?.Dispose();
                 }
 
-                this.jsRuntime?.InvokeVoidAsync(MethodNames.DISPOSE, this.instanceKey);
+                if (this.jsRuntime != null) {
+                    await this.jsRuntime.InvokeVoidAsync(MethodNames.DISPOSE, this.instanceKey).ConfigureAwait(false);
+                }
+                
                 disposedValue = true;
             }
         }
 
-        ~IntersectionObserver()
-        {
-            Dispose(disposing: false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        private List<IntersectionObserverEntry> DeserializeEntries(string entriesJson) 
+        private static List<IntersectionObserverEntry> DeserializeEntries(string entriesJson) 
         {
             JsonSerializerOptions options = new JsonSerializerOptions() {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase 
             };
 
             return JsonSerializer.Deserialize<List<IntersectionObserverEntry>>(entriesJson, options);
+        }
+
+        private async void Initialize(IntersectionObserverOptions options) {
+            await this.jsRuntime.InvokeVoidAsync(MethodNames.CREATE, this.instanceKey, this.reference, options).ConfigureAwait(false);
         }
 
         private static class MethodNames

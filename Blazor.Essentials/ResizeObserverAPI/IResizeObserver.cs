@@ -1,14 +1,15 @@
 namespace Blazor.Essentials.ResizeObserverAPI
 {
     using System;
+    using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
 
-    public interface IResizeObserver : IDisposable
+    public interface IResizeObserver : IAsyncDisposable
     {
-        void Disconnect();
+        ValueTask DisconnectAsync();
 
-        void Observe(ElementReference reference);
+        ValueTask ObserveAsync(ElementReference reference);
 
-        void Unobserve(ElementReference target);
+        ValueTask UnobserveAsync(ElementReference target);
     }
 }

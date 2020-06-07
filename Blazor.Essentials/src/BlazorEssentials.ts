@@ -1,27 +1,30 @@
-import { ResizeObserverManager } from "./ResizeObserverAPI/ResizeObserverManager"
-import {IntersectionObserverManager} from "./IntersectionObserverAPI/IntersectionObserverManager"
+import { ResizeObserverManager } from './ResizeObserverAPI/ResizeObserverManager'
+import {IntersectionObserverManager} from './IntersectionObserverAPI/IntersectionObserverManager'
+import { LocalStorageProxy } from './WebStorage/LocalStorageProxy'
+import { SessionStorageProxy } from './WebStorage/SessionStorageProxy'
 
 
-namespace BlazorEssentials {
-  const StaticName: string = 'BlazorEssentials';
-  
-  const BlazorEssentials = {
+const BlazorEssentialsInit = {
+  BlazorEssentials: {
     ResizeObserverManager: new ResizeObserverManager(),
-    IntersectionObserverManager: new IntersectionObserverManager()
-  };
-  
-  export function initialize(): void {
+    IntersectionObserverManager: new IntersectionObserverManager(),
+    LocalStorageProxy: new LocalStorageProxy(),
+    SessionStorageProxy: new SessionStorageProxy()
+  },
+  initialize: () => {
+    const StaticName = 'BlazorEssentials'
     if (typeof window != 'undefined' && !window[StaticName]) {
       window[StaticName] = {
-        ...BlazorEssentials
-      };
+        ...BlazorEssentialsInit.BlazorEssentials
+      }
     } else {
       window[StaticName] = {
         ...window[StaticName],
-        ...BlazorEssentials
-      };
+        ...BlazorEssentialsInit.BlazorEssentials
+      }
     }
-  }  
+  }
+  
 }
 
-BlazorEssentials.initialize();
+BlazorEssentialsInit.initialize()

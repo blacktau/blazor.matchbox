@@ -1,17 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 
 namespace Blazor.Essentials.IntersectionObserverAPI
 {
-    public interface IIntersectionObserver : IDisposable
+    public interface IIntersectionObserver : IAsyncDisposable
     {
-        void Disconnect();
+        ValueTask DisconnectAsync();
 
-        void Observe(ElementReference targetElement);
+        ValueTask ObserveAsync(ElementReference targetElement);
 
-        List<IntersectionObserverEntry> TakeRecords();
+        ValueTask<List<IntersectionObserverEntry>> TakeRecordsAsync();
 
-        void Unobserve(ElementReference target);
+        ValueTask UnobserveAsync(ElementReference target);
     }
 }
