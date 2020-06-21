@@ -1,4 +1,4 @@
-# Blazor Essentials
+# Blazor Matchbox
 
 A collection of Helpers for accessing browser APIS (ResizeObserver, IntersectionObserver etc)
 

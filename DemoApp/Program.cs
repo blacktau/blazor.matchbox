@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Blazor.Essentials;
+using Blazor.Matchbox;
 
 namespace DemoApp
 {
@@ -15,7 +15,7 @@ namespace DemoApp
             builder.RootComponents.Add<App>("app");
 
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-            builder.Services.AddBlazorEssentials();
+            builder.Services.AddBlazorMatchbox();
             
             await builder.Build().RunAsync();
         }
