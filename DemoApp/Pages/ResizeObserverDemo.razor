@@ -4,8 +4,8 @@
 @using Blazor.Essentials.ResizeObserverAPI
 @using Microsoft.Extensions.Logging
 
-@inject IResizeObserverFactory ResizeObserverFactory
-@inject ILogger<ResizeObserverDemo> Logger
+@inject IResizeObserverFactory resizeObserverFactory
+@inject ILogger<ResizeObserverDemo> logger
 
 <style>
     .resizeCard {
@@ -55,34 +55,31 @@
 
     private decimal borderRadius = 10.0M;
 
-    private List<ResizeObserverEntry> entriesList = new List<ResizeObserverEntry>();
+    private readonly List<ResizeObserverEntry> entriesList = new List<ResizeObserverEntry>();
 
     public void Dispose()
     {
-        if (resizeObserver != null)
-        {
-            resizeObserver.DisposeAsync();
-        }
+        resizeObserver?.DisposeAsync();
     }
 
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
 
-        Logger.LogInformation($"OnAfterRender {firstRender}");
+        logger.LogInformation($"OnAfterRender {firstRender}");
         
         if (!firstRender || resizeObserver != null)
         {
             return;
         }
 
-        Logger.LogInformation($"AttachObserver");
+        logger.LogInformation("AttachObserver");
         AttachObserver();
     }
 
     private void AttachObserver() 
     {
-        resizeObserver = ResizeObserverFactory.CreateObserver(this.OnResize);
+        resizeObserver = resizeObserverFactory.CreateObserver(this.OnResize);
         resizeObserver.ObserveAsync(resizerReference);
     }
 

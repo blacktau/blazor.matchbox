@@ -4,9 +4,8 @@
 @using Blazor.Essentials.IntersectionObserverAPI;
 @using Microsoft.Extensions.Logging;
 
-@inject ILogger<IntersectionObserverDemo> Logger;
-@inject IIntersectionObserverFactory ObserverFactory;
-
+@inject ILogger<IntersectionObserverDemo> logger;
+@inject IIntersectionObserverFactory observerFactory;
 
 <style>
     .theBox {
@@ -54,9 +53,9 @@
 </div>
 
 @code {
-    private const int numSteps = 20;
+    private const int NumSteps = 20;
 
-    private decimal prevRatio = 0.0M;
+    private decimal prevRatio;
 
     private int red = 40;
 
@@ -70,10 +69,7 @@
 
     public void Dispose()
     {
-        if (observer != null)
-        {
-            observer.DisposeAsync();
-        }
+        observer?.DisposeAsync();
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -97,7 +93,7 @@
             Threshold = BuildThresholdList()
         };
 
-        observer = ObserverFactory.CreateObserver(this.OnIntersectUpdated, options);
+        observer = observerFactory.CreateObserver(this.OnIntersectUpdated, options);
 
         observer.ObserveAsync(observerReference);
     }
@@ -125,9 +121,9 @@
     private static List<decimal> BuildThresholdList()
     {
         var thresholds = new List<decimal>();
-        for (int i = 0; i <= numSteps; i++)
+        for (int i = 0; i <= NumSteps; i++)
         {
-            var ratio = i / (decimal)numSteps;
+            var ratio = i / (decimal)NumSteps;
             thresholds.Add(ratio);
         }
 

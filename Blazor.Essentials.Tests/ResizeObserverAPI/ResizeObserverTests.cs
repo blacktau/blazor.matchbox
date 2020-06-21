@@ -2,7 +2,6 @@ namespace Blazor.Essentials.Tests.ResizeObserverAPI
 {
     using System.Collections.Generic;
 
-    using Blazor.Essentials.IntersectionObserverAPI;
     using Blazor.Essentials.ResizeObserverAPI;
 
     using Bunit;
@@ -22,6 +21,8 @@ namespace Blazor.Essentials.Tests.ResizeObserverAPI
         private const string Observe = "BlazorEssentials.ResizeObserverManager.observe";
         private const string Unobserve = "BlazorEssentials.ResizeObserverManager.unobserve";
         private const string Dispose = "BlazorEssentials.ResizeObserverManager.dispose";
+
+        private const string ResizeObserverResult = "[{\"borderBoxSize\":{\"blockSize\":114.7,\"inlineSize\":306.5},\"contentBoxSize\":{\"blockSize\":112.1,\"inlineSize\":304.2},\"contentRect\":{\"x\":1234.56,\"y\":5678.91,\"width\":304.34,\"height\":112.56,\"top\":1234.78,\"right\":304.5,\"bottom\":112.6,\"left\":89.0},\"target\":{}}]";
 
         public class Constructor : TestContext
         {
@@ -55,6 +56,7 @@ namespace Blazor.Essentials.Tests.ResizeObserverAPI
                 var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback, logger);
 
                 jsMock.VerifyInvoke(Create);
+                Assert.NotNull(observer);
             }
             
             [Fact]
@@ -76,6 +78,8 @@ namespace Blazor.Essentials.Tests.ResizeObserverAPI
                 var key2 = jsMock.Invocations[Create][1].Arguments[0];
                 
                 Assert.NotEqual(key1, key2);
+                Assert.NotNull(observer);
+                Assert.NotNull(observer2);
             }
         }
         
@@ -214,6 +218,69 @@ namespace Blazor.Essentials.Tests.ResizeObserverAPI
             }
         }
 
+        public class InvokeCallback : TestContext
+        {
+            [Fact]
+            public void WhenInvokedInvokesCallback()
+            {
+                var jsMock = this.Services.AddMockJsRuntime();
+                var logger = Mock.Of<ILogger<ResizeObserver>>();
 
+                var invoked = false;
+                
+                void Callback(List<ResizeObserverEntry> list, IResizeObserver resizeObserver)
+                {
+                    invoked = true;
+                }
+
+                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback, logger);
+
+                observer.InvokeCallback(ResizeObserverResult);
+
+                Assert.True(invoked);
+            }
+            
+            [Fact]
+            public void WhenInvokedDeserializesCorrectly()
+            {
+                var jsMock = this.Services.AddMockJsRuntime();
+                var logger = Mock.Of<ILogger<ResizeObserver>>();
+
+                List<ResizeObserverEntry> entries = null;
+                
+                void Callback(List<ResizeObserverEntry> list, IResizeObserver resizeObserver)
+                {
+                    entries = list;
+                }
+
+                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback, logger);
+
+                observer.InvokeCallback(ResizeObserverResult);
+
+                Assert.NotNull(entries);
+                Assert.Single(entries);
+                var entry = entries[0];
+                
+                Assert.NotNull(entry.BorderBoxSize);
+                Assert.Equal(114.7M, entry.BorderBoxSize.BlockSize);
+                Assert.Equal(306.5M, entry.BorderBoxSize.InlineSize);
+                
+                Assert.NotNull(entry.ContentBoxSize);
+                Assert.Equal(112.1M, entry.ContentBoxSize.BlockSize);
+                Assert.Equal(304.2M, entry.ContentBoxSize.InlineSize);
+                
+                Assert.NotNull(entry.ContentRect);
+                Assert.Equal(1234.56M, entry.ContentRect.X);
+                Assert.Equal(5678.91M, entry.ContentRect.Y);
+                Assert.Equal(304.34M, entry.ContentRect.Width);
+                Assert.Equal(112.56M, entry.ContentRect.Height);
+                Assert.Equal(1234.78M, entry.ContentRect.Top);
+                Assert.Equal(304.5M, entry.ContentRect.Right);
+                Assert.Equal(112.6M, entry.ContentRect.Bottom);
+                Assert.Equal(89M, entry.ContentRect.Left);
+                
+                Assert.Equal(default, entry.Target);
+            }
+        }
     }
 }

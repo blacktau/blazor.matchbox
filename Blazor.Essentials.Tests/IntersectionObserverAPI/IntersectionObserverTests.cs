@@ -57,6 +57,7 @@ namespace Blazor.Essentials.Tests.IntersectionObserverAPI
                 
                 var observer = new IntersectionObserver(jsMock.ToJsRuntime(), Callback, options);
 
+                Assert.NotNull(observer);
                 jsMock.VerifyInvoke(Create);
             }
             
@@ -80,6 +81,8 @@ namespace Blazor.Essentials.Tests.IntersectionObserverAPI
                 var key2 = jsMock.Invocations[Create][1].Arguments[0];
                 
                 Assert.NotEqual(key1, key2);
+                Assert.NotNull(observer);
+                Assert.NotNull(observer2);
             }
         }
 
@@ -250,10 +253,8 @@ namespace Blazor.Essentials.Tests.IntersectionObserverAPI
                 Assert.True(entry.IsIntersecting);
                 Assert.Equal(4868, entry.Time);
                 
-                Assert.Equal(default(ElementReference), entry.Target);
+                Assert.Equal(default, entry.Target);
             }
-
-            private bool ArumentsMatcher(IReadOnlyList<object> arg) => true;
         }
         
         public class InvokeCallback : TestContext
@@ -278,6 +279,7 @@ namespace Blazor.Essentials.Tests.IntersectionObserverAPI
 
                 Assert.True(invoked);
             }
+            
         }
         
         public class DisposeAsync : TestContext

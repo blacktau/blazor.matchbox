@@ -1,13 +1,17 @@
-namespace Blazor.Essentials.Tests.IntersectionObserverAPI
+namespace Blazor.Essentials.Tests.ResizeObserverAPI
 {
-    using Blazor.Essentials.IntersectionObserverAPI;
+    using Blazor.Essentials.ResizeObserverAPI;
 
     using Bunit;
     using Bunit.Mocking.JSInterop;
 
+    using Microsoft.Extensions.Logging;
+    
+    using Moq;
+
     using Xunit;
 
-    public class IntersectionObserverFactoryTests
+    public class ResizeObserverFactoryTests
     {
         public class Constructor : TestContext
         {
@@ -15,8 +19,9 @@ namespace Blazor.Essentials.Tests.IntersectionObserverAPI
             public void GivenValidInputConstructs()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
+                var logger = Mock.Of<ILoggerFactory>();
 
-                var observerFactory = new IntersectionObserverFactory(jsMock.ToJsRuntime());
+                var observerFactory = new ResizeObserverFactory(jsMock.ToJsRuntime(), logger);
 
                 Assert.NotNull(observerFactory);
             }
@@ -28,17 +33,17 @@ namespace Blazor.Essentials.Tests.IntersectionObserverAPI
             public void GivenValidInputConstructsObserver()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
+                var logger = Mock.Of<ILoggerFactory>();
 
-                var observerFactory = new IntersectionObserverFactory(jsMock.ToJsRuntime());
+                var observerFactory = new ResizeObserverFactory(jsMock.ToJsRuntime(), logger);
 
                 var observer = observerFactory.CreateObserver(
-                    ((entries, intersectionObserver) =>
+                    ((entries, resizeObserver) =>
                     {
                     }));
 
                 Assert.NotNull(observer);
             }
         }
-
     }
 }

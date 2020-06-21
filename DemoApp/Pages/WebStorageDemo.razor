@@ -3,9 +3,9 @@
 @using Blazor.Essentials.WebStorage
 @using Microsoft.Extensions.Logging
 
-@inject ILocalStorage LocalStorage
-@inject ISessionStorage SessionStorage
-@inject ILogger<WebStorageDemo> Logger
+@inject ILocalStorage localStorage
+@inject ISessionStorage sessionStorage
+@inject ILogger<WebStorageDemo> logger
 
 <h1>WebStorage - Demo</h1>
 
@@ -74,7 +74,7 @@
     
     private string ItemValue { get; set; }
 
-    private string StorageTypeKey { get; set; } = "local";
+    private string StorageTypeKey { get;  } = "local";
 
     private IStorage SelectedStorage
     {
@@ -82,10 +82,10 @@
         {
             if (StorageTypeKey == "session")
             {
-                return SessionStorage;
+                return sessionStorage;
             }
             
-            return LocalStorage;
+            return localStorage;
         }
     }
     

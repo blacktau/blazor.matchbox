@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 namespace Blazor.Essentials.ResizeObserverAPI
 {
     using System;
