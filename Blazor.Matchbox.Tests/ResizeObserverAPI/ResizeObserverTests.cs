@@ -1,6 +1,7 @@
 namespace Blazor.Matchbox.Tests.ResizeObserverAPI
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     using Blazor.Matchbox.ResizeObserverAPI;
 
@@ -8,9 +9,6 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
     using Bunit.Mocking.JSInterop;
 
     using Microsoft.AspNetCore.Components;
-    using Microsoft.Extensions.Logging;
-
-    using Moq;
 
     using Xunit;
 
@@ -30,14 +28,13 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
             public void GivenValidInputConstructs()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
-                var logger = Mock.Of<ILogger<ResizeObserver>>();
 
                 static void Callback(List<ResizeObserverEntry> list, IResizeObserver resizeObserver)
                 {
                     // no op
                 }
 
-                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback, logger);
+                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback);
                 
                 Assert.NotNull(observer);
             }
@@ -46,14 +43,13 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
             public void InvokesCreateOnJsRunTime()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
-                var logger = Mock.Of<ILogger<ResizeObserver>>();
 
                 static void Callback(List<ResizeObserverEntry> list, IResizeObserver resizeObserver)
                 {
                     // no op
                 }
 
-                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback, logger);
+                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback);
 
                 jsMock.VerifyInvoke(Create);
                 Assert.NotNull(observer);
@@ -63,15 +59,14 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
             public void InvokedCreateSuppliesNewInstanceKeyEachTime()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
-                var logger = Mock.Of<ILogger<ResizeObserver>>();
 
                 static void Callback(List<ResizeObserverEntry> list, IResizeObserver resizeObserver)
                 {
                     // no op
                 }
 
-                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback, logger);
-                var observer2 = new ResizeObserver(jsMock.ToJsRuntime(), Callback, logger);
+                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback);
+                var observer2 = new ResizeObserver(jsMock.ToJsRuntime(), Callback);
 
                 jsMock.VerifyInvoke(Create, 2);
                 var key1 = jsMock.Invocations[Create][0].Arguments[0];
@@ -89,14 +84,13 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
             public void InvokesDisconnectOnJsRuntime()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
-                var logger = Mock.Of<ILogger<ResizeObserver>>();
 
                 static void Callback(List<ResizeObserverEntry> list, IResizeObserver resizeObserver)
                 {
                     // no op
                 }
 
-                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback, logger);
+                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback);
 
                 observer.DisconnectAsync();
 
@@ -115,14 +109,13 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
             public void InvokesObserveOnJsRuntime()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
-                var logger = Mock.Of<ILogger<ResizeObserver>>();
 
                 static void Callback(List<ResizeObserverEntry> list, IResizeObserver resizeObserver)
                 {
                     // no op
                 }
 
-                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback, logger);
+                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback);
 
 
                 var elementRef = new ElementReference();
@@ -145,14 +138,13 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
             public void InvokesUnobserveAsyncOnJsRuntime()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
-                var logger = Mock.Of<ILogger<ResizeObserver>>();
 
                 static void Callback(List<ResizeObserverEntry> list, IResizeObserver resizeObserver)
                 {
                     // no op
                 }
 
-                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback, logger);
+                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback);
 
                 var elementRef = new ElementReference();
                 
@@ -174,14 +166,13 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
             public void WhenInvokedInvokesDisposeOnJsRuntime()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
-                var logger = Mock.Of<ILogger<ResizeObserver>>();
 
                 static void Callback(List<ResizeObserverEntry> list, IResizeObserver resizeObserver)
                 {
                     // no op
                 }
 
-                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback, logger);
+                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback);
 
                 observer.DisposeAsync();
 
@@ -194,20 +185,19 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
             }
             
             [Fact]
-            public void WhenInvokedTwiceCallsDisposeOnJsRuntimeOnce()
+            public async Task WhenInvokedTwiceCallsDisposeOnJsRuntimeOnce()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
-                var logger = Mock.Of<ILogger<ResizeObserver>>();
 
                 static void Callback(List<ResizeObserverEntry> list, IResizeObserver resizeObserver)
                 {
                     // no op
                 }
 
-                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback, logger);
+                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback);
 
-                observer.DisposeAsync();
-                observer.DisposeAsync();
+                await observer.DisposeAsync();
+                await observer.DisposeAsync();
 
                 jsMock.VerifyInvoke(ResizeObserverTests.Dispose);
                 
@@ -224,7 +214,6 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
             public void WhenInvokedInvokesCallback()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
-                var logger = Mock.Of<ILogger<ResizeObserver>>();
 
                 var invoked = false;
                 
@@ -233,7 +222,7 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
                     invoked = true;
                 }
 
-                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback, logger);
+                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback);
 
                 observer.InvokeCallback(ResizeObserverResult);
 
@@ -244,7 +233,6 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
             public void WhenInvokedDeserializesCorrectly()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
-                var logger = Mock.Of<ILogger<ResizeObserver>>();
 
                 List<ResizeObserverEntry> entries = null;
                 
@@ -253,7 +241,7 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
                     entries = list;
                 }
 
-                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback, logger);
+                var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback);
 
                 observer.InvokeCallback(ResizeObserverResult);
 

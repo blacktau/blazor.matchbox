@@ -9,15 +9,13 @@ namespace Blazor.Matchbox.ResizeObserverAPI
     public class ResizeObserverFactory : IResizeObserverFactory
     {
         private readonly IJSRuntime jsRuntime;
-        private readonly ILoggerFactory loggerFactory;
 
-        public ResizeObserverFactory(IJSRuntime jsRuntime, ILoggerFactory loggerFactory)
+        public ResizeObserverFactory(IJSRuntime jsRuntime)
         {
-            this.loggerFactory = loggerFactory;
             this.jsRuntime = jsRuntime;
         }
 
         public IResizeObserver CreateObserver(Action<IEnumerable<ResizeObserverEntry>, IResizeObserver> callback)
-            => new ResizeObserver(this.jsRuntime, callback, loggerFactory.CreateLogger<ResizeObserver>());
+            => new ResizeObserver(this.jsRuntime, callback);
     }
 }

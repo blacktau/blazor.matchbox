@@ -21,7 +21,6 @@ import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO'
 
     observe = (instanceKey: string, element: Element): void => {
       const observer = this.resizeObservers.get(instanceKey)
-      console.log(`[JS] observe: ${instanceKey} ${element}`)
       if (observer) {
         observer.observe(element)
       }
@@ -94,9 +93,7 @@ import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO'
           }
         })
 
-        const entriesJson = JSON.stringify(mappedEntries)
-        console.log(entriesJson)
-        
+        const entriesJson = JSON.stringify(mappedEntries)       
         dotNetInstance.invokeMethodAsync('InvokeCallback', entriesJson)
       }
     }

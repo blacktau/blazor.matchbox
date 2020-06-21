@@ -5,10 +5,6 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
     using Bunit;
     using Bunit.Mocking.JSInterop;
 
-    using Microsoft.Extensions.Logging;
-    
-    using Moq;
-
     using Xunit;
 
     public class ResizeObserverFactoryTests
@@ -19,9 +15,8 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
             public void GivenValidInputConstructs()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
-                var logger = Mock.Of<ILoggerFactory>();
 
-                var observerFactory = new ResizeObserverFactory(jsMock.ToJsRuntime(), logger);
+                var observerFactory = new ResizeObserverFactory(jsMock.ToJsRuntime());
 
                 Assert.NotNull(observerFactory);
             }
@@ -33,9 +28,8 @@ namespace Blazor.Matchbox.Tests.ResizeObserverAPI
             public void GivenValidInputConstructsObserver()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
-                var logger = Mock.Of<ILoggerFactory>();
 
-                var observerFactory = new ResizeObserverFactory(jsMock.ToJsRuntime(), logger);
+                var observerFactory = new ResizeObserverFactory(jsMock.ToJsRuntime());
 
                 var observer = observerFactory.CreateObserver(
                     ((entries, resizeObserver) =>

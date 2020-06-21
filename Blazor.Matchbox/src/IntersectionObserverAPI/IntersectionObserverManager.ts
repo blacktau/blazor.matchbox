@@ -73,7 +73,6 @@ import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO'
       if (dotNetInstance) {
         const mappedEntries = this.convertEntries(entries)
         const entriesJson = JSON.stringify(mappedEntries)
-        console.log(entriesJson)
         dotNetInstance.invokeMethodAsync('InvokeCallback', entriesJson)
       }
     }

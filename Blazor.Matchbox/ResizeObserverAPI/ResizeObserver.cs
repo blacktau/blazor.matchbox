@@ -12,19 +12,16 @@ namespace Blazor.Matchbox.ResizeObserverAPI
     {
         private readonly IJSRuntime jsRuntime;
         private readonly Action<List<ResizeObserverEntry>, IResizeObserver> callback;
-        private readonly ILogger<ResizeObserver> logger;
         private readonly string instanceKey;
         private readonly DotNetObjectReference<ResizeObserver> reference;
         private bool disposedValue;
 
         public ResizeObserver(
             IJSRuntime jsRuntime, 
-            Action<List<ResizeObserverEntry>, IResizeObserver> callback, 
-            ILogger<ResizeObserver> logger)
+            Action<List<ResizeObserverEntry>, IResizeObserver> callback)
         {
             this.jsRuntime = jsRuntime;
             this.callback = callback;
-            this.logger = logger;
             this.instanceKey = Guid.NewGuid().ToString();
             this.reference = DotNetObjectReference.Create(this);
             this.Initialize();
@@ -37,7 +34,6 @@ namespace Blazor.Matchbox.ResizeObserverAPI
 
         public ValueTask ObserveAsync(ElementReference targetElement)
         {
-            logger.LogDebug($"Observe({targetElement})");
             return this.jsRuntime.InvokeVoidAsync(MethodNames.Observe, this.instanceKey, targetElement);
         }
 
