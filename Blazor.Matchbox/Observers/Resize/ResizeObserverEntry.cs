@@ -1,4 +1,4 @@
-namespace Blazor.Matchbox.ResizeObserverAPI
+namespace Blazor.Matchbox.Observers.Resize
 {
     using Blazor.Matchbox.Common;
 

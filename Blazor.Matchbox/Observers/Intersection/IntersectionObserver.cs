@@ -1,12 +1,13 @@
-using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
-using System.Text.Json;
-using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-
-namespace Blazor.Matchbox.IntersectionObserverAPI
+namespace Blazor.Matchbox.Observers.Intersection
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text.Json;
+    using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Components;
+    using Microsoft.JSInterop;
+
     public sealed class IntersectionObserver : IIntersectionObserver
     {
         private readonly IJSRuntime jsRuntime;
@@ -39,7 +40,7 @@ namespace Blazor.Matchbox.IntersectionObserverAPI
 
         public ValueTask UnobserveAsync(ElementReference target)
         {
-            return this.jsRuntime.InvokeVoidAsync(MethodNames.Unobserve, instanceKey, target);
+            return this.jsRuntime.InvokeVoidAsync(MethodNames.Unobserve, this.instanceKey, target);
         }
 
         public async ValueTask<List<IntersectionObserverEntry>> TakeRecordsAsync()
@@ -59,7 +60,7 @@ namespace Blazor.Matchbox.IntersectionObserverAPI
 
         public async ValueTask DisposeAsync()
         {
-            await DisposeAsync(disposing: true).ConfigureAwait(false);
+            await this.DisposeAsync(disposing: true).ConfigureAwait(false);
         }
 
         private async Task DisposeAsync(bool disposing)

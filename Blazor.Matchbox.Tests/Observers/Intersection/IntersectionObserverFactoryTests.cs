@@ -1,6 +1,6 @@
-namespace Blazor.Matchbox.Tests.IntersectionObserverAPI
+namespace Blazor.Matchbox.Tests.Observers.Intersection
 {
-    using Blazor.Matchbox.IntersectionObserverAPI;
+    using Blazor.Matchbox.Observers.Intersection;
 
     using Bunit;
     using Bunit.Mocking.JSInterop;

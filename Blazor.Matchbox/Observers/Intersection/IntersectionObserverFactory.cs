@@ -1,9 +1,10 @@
-using System;
-using System.Collections.Generic;
-using Microsoft.JSInterop;
-
-namespace Blazor.Matchbox.IntersectionObserverAPI
+namespace Blazor.Matchbox.Observers.Intersection
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Microsoft.JSInterop;
+
     public class IntersectionObserverFactory : IIntersectionObserverFactory
     {
         private readonly IJSRuntime jsRuntime;
@@ -17,6 +18,6 @@ namespace Blazor.Matchbox.IntersectionObserverAPI
             this.CreateObserver(callback, null);
 
         public IIntersectionObserver CreateObserver(Action<List<IntersectionObserverEntry>, IIntersectionObserver> callback, IntersectionObserverOptions options) => 
-            new IntersectionObserver(jsRuntime, callback, options);
+            new IntersectionObserver(this.jsRuntime, callback, options);
     }
 }

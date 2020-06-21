@@ -1,6 +1,6 @@
 import { ResizeObserverEntryTO } from './ResizeObserverEntryTO'
-import { BoxSizeTO } from '../Common/BorderBoxSizeTO'
-import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO'
+import { BoxSizeTO } from '../../Common/BorderBoxSizeTO'
+import { DOMRectReadOnlyTO } from '../../Common/DOMRectReadOnlyTO'
 
   export class ResizeObserverManager {
     private resizeObservers: Map<string, ResizeObserver> = new Map<string, ResizeObserver>()

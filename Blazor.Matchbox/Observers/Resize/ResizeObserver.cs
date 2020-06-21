@@ -1,11 +1,11 @@
-namespace Blazor.Matchbox.ResizeObserverAPI
+namespace Blazor.Matchbox.Observers.Resize
 {
     using System;
     using System.Collections.Generic;
     using System.Text.Json;
     using System.Threading.Tasks;
+
     using Microsoft.AspNetCore.Components;
-    using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
 
     public sealed class ResizeObserver : IResizeObserver
@@ -55,15 +55,14 @@ namespace Blazor.Matchbox.ResizeObserverAPI
        
         private ValueTask Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!this.disposedValue)
             {
-
                 if (disposing)
                 {
                     this.reference?.Dispose();
                 }
                 
-                disposedValue = true;
+                this.disposedValue = true;
 
                 if (this.jsRuntime != null) 
                 {
@@ -76,7 +75,7 @@ namespace Blazor.Matchbox.ResizeObserverAPI
         
         public async ValueTask DisposeAsync()
         {
-            await Dispose(disposing: true).ConfigureAwait(false);
+            await this.Dispose(disposing: true).ConfigureAwait(false);
         }
 
         private async void Initialize() {

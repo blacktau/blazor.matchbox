@@ -1,7 +1,7 @@
 namespace Blazor.Matchbox
 {
-    using Blazor.Matchbox.IntersectionObserverAPI;
-    using Blazor.Matchbox.ResizeObserverAPI;
+    using Blazor.Matchbox.Observers.Intersection;
+    using Blazor.Matchbox.Observers.Resize;
     using Blazor.Matchbox.WebStorage;
 
     using Microsoft.Extensions.DependencyInjection;

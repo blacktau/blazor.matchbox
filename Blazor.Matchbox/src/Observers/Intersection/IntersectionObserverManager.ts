@@ -1,5 +1,5 @@
 import { IntersectionObserverEntryTO } from './IntersectionObserverEntryTO'
-import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO'
+import { DOMRectReadOnlyTO } from '../../Common/DOMRectReadOnlyTO'
 
   export class IntersectionObserverManager {
     private observers: Map<string, IntersectionObserver> = new Map<string, IntersectionObserver>()

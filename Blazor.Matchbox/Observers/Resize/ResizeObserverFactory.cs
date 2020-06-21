@@ -1,9 +1,8 @@
-namespace Blazor.Matchbox.ResizeObserverAPI
+namespace Blazor.Matchbox.Observers.Resize
 {
     using System;
     using System.Collections.Generic;
 
-    using Microsoft.Extensions.Logging;
     using Microsoft.JSInterop;
 
     public class ResizeObserverFactory : IResizeObserverFactory

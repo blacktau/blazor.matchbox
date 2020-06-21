@@ -20,4 +20,8 @@
     <ProjectReference Include="..\Blazor.Matchbox\Blazor.Matchbox.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Observers" />
+  </ItemGroup>
+
 </Project>

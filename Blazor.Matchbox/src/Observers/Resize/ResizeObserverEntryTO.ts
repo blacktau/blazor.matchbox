@@ -1,5 +1,5 @@
-﻿import { BoxSizeTO } from '../Common/BorderBoxSizeTO'
-import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO'
+﻿import { BoxSizeTO } from '../../Common/BorderBoxSizeTO'
+import { DOMRectReadOnlyTO } from '../../Common/DOMRectReadOnlyTO'
 
 export class ResizeObserverEntryTO {
   borderBoxSize?: BoxSizeTO

@@ -1,7 +1,8 @@
-namespace Blazor.Matchbox.ResizeObserverAPI
+namespace Blazor.Matchbox.Observers.Resize
 {
     using System;
     using System.Threading.Tasks;
+
     using Microsoft.AspNetCore.Components;
 
     public interface IResizeObserver : IAsyncDisposable

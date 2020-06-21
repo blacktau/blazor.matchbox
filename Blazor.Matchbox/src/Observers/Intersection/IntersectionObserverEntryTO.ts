@@ -1,4 +1,4 @@
-import { DOMRectReadOnlyTO } from '../Common/DOMRectReadOnlyTO'
+import { DOMRectReadOnlyTO } from '../../Common/DOMRectReadOnlyTO'
 
 export class IntersectionObserverEntryTO {
     boundingClientRect?: DOMRectReadOnlyTO

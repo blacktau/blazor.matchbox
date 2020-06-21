@@ -1,5 +1,5 @@
-import { ResizeObserverManager } from './ResizeObserverAPI/ResizeObserverManager'
-import {IntersectionObserverManager} from './IntersectionObserverAPI/IntersectionObserverManager'
+import { ResizeObserverManager } from './Observers/Resize/ResizeObserverManager'
+import {IntersectionObserverManager} from './Observers/Intersection/IntersectionObserverManager'
 import { LocalStorageProxy } from './WebStorage/LocalStorageProxy'
 import { SessionStorageProxy } from './WebStorage/SessionStorageProxy'
 

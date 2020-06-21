@@ -1,9 +1,8 @@
-using Blazor.Matchbox.Common;
-using Microsoft.AspNetCore.Components;
-
-namespace Blazor.Matchbox.IntersectionObserverAPI
+namespace Blazor.Matchbox.Observers.Intersection
 {
     using Blazor.Matchbox.Common;
+
+    using Microsoft.AspNetCore.Components;
 
     public class IntersectionObserverEntry
     {

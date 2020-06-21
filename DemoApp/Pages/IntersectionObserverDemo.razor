@@ -1,7 +1,6 @@
 ﻿@page "/intersectionobserverdemo"
 @implements IDisposable
-
-@using Blazor.Matchbox.IntersectionObserverAPI;
+@using Blazor.Matchbox.Observers.Intersection
 @using Microsoft.Extensions.Logging;
 
 @inject ILogger<IntersectionObserverDemo> logger;
@@ -89,9 +88,10 @@
         var options = new IntersectionObserverOptions
         {
             Root = null,
-            RootMargin = "0px",
-            Threshold = BuildThresholdList()
+            RootMargin = "0px"
         };
+
+        options.Threshold.AddRange(BuildThresholdList());
 
         observer = observerFactory.CreateObserver(this.OnIntersectUpdated, options);
 

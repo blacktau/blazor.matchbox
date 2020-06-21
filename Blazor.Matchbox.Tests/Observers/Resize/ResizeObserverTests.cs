@@ -1,9 +1,9 @@
-namespace Blazor.Matchbox.Tests.ResizeObserverAPI
+namespace Blazor.Matchbox.Tests.Observers.Resize
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Blazor.Matchbox.ResizeObserverAPI;
+    using Blazor.Matchbox.Observers.Resize;
 
     using Bunit;
     using Bunit.Mocking.JSInterop;
