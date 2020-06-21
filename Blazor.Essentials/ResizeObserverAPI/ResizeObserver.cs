@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 namespace Blazor.Essentials.ResizeObserverAPI
 {
     using System;
@@ -33,18 +32,18 @@ namespace Blazor.Essentials.ResizeObserverAPI
 
         public ValueTask DisconnectAsync() 
         { 
-            return this.jsRuntime.InvokeVoidAsync(MethodNames.DISCONNECT, this.instanceKey);
+            return this.jsRuntime.InvokeVoidAsync(MethodNames.Disconnect, this.instanceKey);
         }
 
         public ValueTask ObserveAsync(ElementReference targetElement)
         {
             logger.LogDebug($"Observe({targetElement})");
-            return this.jsRuntime.InvokeVoidAsync(MethodNames.OBSERVE, this.instanceKey, targetElement);
+            return this.jsRuntime.InvokeVoidAsync(MethodNames.Observe, this.instanceKey, targetElement);
         }
 
         public ValueTask UnobserveAsync(ElementReference target)
         {
-            return this.jsRuntime.InvokeVoidAsync(MethodNames.UNOBSERVE, this.instanceKey, target);
+            return this.jsRuntime.InvokeVoidAsync(MethodNames.Unobserve, this.instanceKey, target);
         }
 
         [JSInvokable("InvokeCallback")]
@@ -72,7 +71,7 @@ namespace Blazor.Essentials.ResizeObserverAPI
 
                 if (this.jsRuntime != null) 
                 {
-                     return this.jsRuntime.InvokeVoidAsync(MethodNames.DISCONNECT, this.instanceKey);
+                     return this.jsRuntime.InvokeVoidAsync(MethodNames.Dispose, this.instanceKey);
                 }
             }
 
@@ -85,16 +84,16 @@ namespace Blazor.Essentials.ResizeObserverAPI
         }
 
         private async void Initialize() {
-            await this.jsRuntime.InvokeVoidAsync(MethodNames.CREATE, this.instanceKey, this.reference).ConfigureAwait(false);
+            await this.jsRuntime.InvokeVoidAsync(MethodNames.Create, this.instanceKey, this.reference).ConfigureAwait(false);
         }
 
         private static class MethodNames
         {
-            public const string CREATE = "BlazorEssentials.ResizeObserverManager.create";
-            public const string DISCONNECT = "BlazorEssentials.ResizeObserverManager.disconnect";
-            public const string OBSERVE = "BlazorEssentials.ResizeObserverManager.observe";
-            public const string UNOBSERVE = "BlazorEssentials.ResizeObserverManager.unobserve";
-            public const string DISPOSE = "BlazorEssentials.ResizeObserverManager.dispose";
+            public const string Create = "BlazorEssentials.ResizeObserverManager.create";
+            public const string Disconnect = "BlazorEssentials.ResizeObserverManager.disconnect";
+            public const string Observe = "BlazorEssentials.ResizeObserverManager.observe";
+            public const string Unobserve = "BlazorEssentials.ResizeObserverManager.unobserve";
+            public const string Dispose = "BlazorEssentials.ResizeObserverManager.dispose";
         }
     }
 }
