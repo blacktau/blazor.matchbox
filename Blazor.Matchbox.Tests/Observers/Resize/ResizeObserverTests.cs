@@ -163,7 +163,7 @@ namespace Blazor.Matchbox.Tests.Observers.Resize
         public class DisposeAsync : TestContext
         {
             [Fact]
-            public void WhenInvokedInvokesDisposeOnJsRuntime()
+            public async void WhenInvokedInvokesDisposeOnJsRuntime()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
 
@@ -174,7 +174,7 @@ namespace Blazor.Matchbox.Tests.Observers.Resize
 
                 var observer = new ResizeObserver(jsMock.ToJsRuntime(), Callback);
 
-                observer.DisposeAsync();
+                await observer.DisposeAsync();
 
                 jsMock.VerifyInvoke(ResizeObserverTests.Dispose);
                 

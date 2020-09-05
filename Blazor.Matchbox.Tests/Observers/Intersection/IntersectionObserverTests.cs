@@ -176,7 +176,7 @@ namespace Blazor.Matchbox.Tests.Observers.Intersection
         public class TakeRecordsAsync : TestContext
         {
             [Fact]
-            public void InvokesTakeRecordsOnJsRuntime()
+            public async void InvokesTakeRecordsOnJsRuntime()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
                 jsMock
@@ -192,7 +192,7 @@ namespace Blazor.Matchbox.Tests.Observers.Intersection
                 
                 var observer = new IntersectionObserver(jsMock.ToJsRuntime(), Callback, options);
 
-                observer.TakeRecordsAsync();
+                await observer.TakeRecordsAsync();
 
                 jsMock.VerifyInvoke(TakeRecords);
                 
@@ -285,7 +285,7 @@ namespace Blazor.Matchbox.Tests.Observers.Intersection
         public class DisposeAsync : TestContext
         {
             [Fact]
-            public void WhenInvokedInvokesDisposeOnJsRuntime()
+            public async void WhenInvokedInvokesDisposeOnJsRuntime()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
               
@@ -298,7 +298,7 @@ namespace Blazor.Matchbox.Tests.Observers.Intersection
                 
                 var observer = new IntersectionObserver(jsMock.ToJsRuntime(), Callback, options);
 
-                observer.DisposeAsync();
+                await observer.DisposeAsync();
 
                 jsMock.VerifyInvoke(IntersectionObserverTests.Dispose);
                 
@@ -309,7 +309,7 @@ namespace Blazor.Matchbox.Tests.Observers.Intersection
             }
             
             [Fact]
-            public void WhenInvokedTwiceCallsDisposeOnJsRuntimeOnce()
+            public async void WhenInvokedTwiceCallsDisposeOnJsRuntimeOnce()
             {
                 var jsMock = this.Services.AddMockJsRuntime();
               
@@ -322,8 +322,8 @@ namespace Blazor.Matchbox.Tests.Observers.Intersection
                 
                 var observer = new IntersectionObserver(jsMock.ToJsRuntime(), Callback, options);
 
-                observer.DisposeAsync();
-                observer.DisposeAsync();
+                await observer.DisposeAsync();
+                await observer.DisposeAsync();
 
                 jsMock.VerifyInvoke(IntersectionObserverTests.Dispose);
                 
