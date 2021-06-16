@@ -1,48 +1,35 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <RazorLangVersion>3.0</RazorLangVersion>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <TargetFramework>net5.0</TargetFramework>
     <Authors>Sean Garrett</Authors>
     <Product>Blazor.Matchbox</Product>
-    <Description>
-      A Blazor Library exposing browsers Web Apis to Blazor code.
-    </Description>
-    <Copyright>Sean Garrett</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/blacktau/blazor.matchbox</PackageProjectUrl>
     <RepositoryUrl>https://github.com/blacktau/blazor.matchbox</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
-    <LangVersion>latest</LangVersion>
-    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-    <DefaultItemExcludes>${DefaultItemExcludes};scripts\dist\**;scripts\node_modules\**</DefaultItemExcludes>
-    <NoWarn>CS2008</NoWarn>
-    <!-- VS's FastUpToDateCheck doesn't consider .ts file changes, so it's necessary to disable it to get incremental builds to work correctly (albeit not as fast as if FastUpToDateCheck did work for them) -->
-    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
-    <RootNamespace>Blazor.Matchbox</RootNamespace>
-    <PackageTags>Blazor</PackageTags>
-    <TypescriptOutDir>content</TypescriptOutDir>
     <PackageId>Blazor.Matchbox</PackageId>
+    <RootNamespace>Blazor.Matchbox</RootNamespace>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
+
 
   <PropertyGroup>
     <DefaultItemExcludes>$(DefaultItemExcludes);node_modules\**\*;*.json;</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
     <WebpackInputs Include="src\**\*.ts" Exclude="wwwroot\**;node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="System.Text.Json" Version="4.7.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.5" PrivateAssets="all" />
+    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
