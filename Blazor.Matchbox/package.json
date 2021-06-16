@@ -13,7 +13,7 @@
     "@types/resize-observer-browser": "^0.1.5",
     "@typescript-eslint/eslint-plugin": "^3.10.1",
     "@typescript-eslint/parser": "^3.10.1",
-    "eslint": "^7.25.0",
+    "eslint": "^7.28.0",
     "ts-loader": "^4.4.2",
     "typescript": "^2.9.2",
     "webpack": "^4.46.0",
